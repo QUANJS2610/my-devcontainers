@@ -59,30 +59,32 @@ def get_data_from_Gmail():
         msgs.append(data)
         break
 
-    #Now we have all messages, but with a lot of details
-    #Let us extract the right text and print on the screen
+    return msgs #Return the messages to the main function for further processing
 
-    #In a multipart e-mail, email.message.Message.get_payload() returns a 
-    # list with one item for each part. The easiest way is to walk the message 
-    # and get the payload on each part:
-    # https://stackoverflow.com/questions/1463074/how-can-i-get-an-email-messages-text-content-using-python
+    # #Now we have all messages, but with a lot of details
+    # #Let us extract the right text and print on the screen
 
-    # NOTE that a Message object consists of headers and payloads.
+    # #In a multipart e-mail, email.message.Message.get_payload() returns a 
+    # # list with one item for each part. The easiest way is to walk the message 
+    # # and get the payload on each part:
+    # # https://stackoverflow.com/questions/1463074/how-can-i-get-an-email-messages-text-content-using-python
 
-    for msg in msgs[::-1]:
-        for response_part in msg:
-            if type(response_part) is tuple:
-                my_msg=email.message_from_bytes((response_part[1]))
+    # # NOTE that a Message object consists of headers and payloads.
 
-                print("_________________________________________")
-                print ("subj:", my_msg['subject'])
-                print ("from:", my_msg['from'])
-                print ("date received:", email.utils.parsedate_to_datetime(my_msg['date']))
-                print ("body:")
+    # for msg in msgs[::-1]:
+    #     for response_part in msg:
+    #         if type(response_part) is tuple:
+    #             my_msg=email.message_from_bytes((response_part[1]))
 
-                for part in my_msg.walk():  
-                    #print(part.get_content_type())
-                    if part.get_content_type() == 'text/plain':
-                        print (part.get_payload())
-            break
+    #             print("_________________________________________")
+    #             print ("subj:", my_msg['subject'])
+    #             print ("from:", my_msg['from'])
+    #             print ("date received:", email.utils.parsedate_to_datetime(my_msg['date']))
+    #             print ("body:")
+
+    #             for part in my_msg.walk():  
+    #                 #print(part.get_content_type())
+    #                 if part.get_content_type() == 'text/plain':
+    #                     print (part.get_payload())
+    #         break
         
