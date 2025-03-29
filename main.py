@@ -17,7 +17,8 @@ def main():
     # get_data_from_Gmail()
 
     # Get the messages from the Gmail account using the get_data_from_Gmail function from the Extract_Data_from_Gmail.py file
-    msgs = get_data_from_Gmail()
+    mail_count=100
+    msgs = get_data_from_Gmail(mail_count)
 
     # Write the data to the Excel file using the write_data_to_excel function from the Write_Data_from_Gmail_to_Excel.py file
     write_data_to_excel(msgs)

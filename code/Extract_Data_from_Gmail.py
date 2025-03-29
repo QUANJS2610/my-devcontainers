@@ -22,12 +22,17 @@ def get_credentials():
     my_credentials = yaml.load(content, Loader=yaml.FullLoader)
 
     #Get the user and password from the credentials file
-    user, password = my_credentials["user"], my_credentials["password"]
-    return user, password
+    user, password, key, value = (
+        my_credentials['user'], 
+        my_credentials['password'], 
+        my_credentials['key'], 
+        my_credentials['value']
+    )
+    return user, password , key, value
 
-def get_data_from_Gmail():
+def get_data_from_Gmail(mail_count):
     #Get the user and password from the credentials file
-    user, password = get_credentials()
+    user, password, key, value = get_credentials()
 
     #Define the imap_url for Gmail account
     imap_url = 'imap.gmail.com'
@@ -43,8 +48,6 @@ def get_data_from_Gmail():
 
     # Search for emails from a specific email address
     #For other keys (criteria): https://gist.github.com/martinrusev/6121028#file-imap-search
-    key = 'FROM'
-    value = 'konami-info@konami.net' #'founders@dailycodingproblem.com'
     _, data = my_mail.search(None, key, value)
 
     # data is a list of mail ids
@@ -54,10 +57,14 @@ def get_data_from_Gmail():
     msgs = []
 
     # Loop through the mail_id_list and fetch the messages from the Gmail account
+    count = 0
     for num in mail_id_list:
+        count+= 1
+        if count > mail_count:
+            break
+
         typ, data = my_mail.fetch(num, '(RFC822)') #RFC822 returns whole message (BODY fetches just body)
         msgs.append(data)
-        break
 
     return msgs #Return the messages to the main function for further processing
 

@@ -9,15 +9,13 @@ import imaplib
 
 import openpyxl as xl  # Importing the openpyxl library to work with Excel files
 import yaml
-from Extract_Data_from_Gmail import get_data_from_Gmail
 from openpyxl import \
     Workbook  # Importing the Workbook class from the openpyxl library
 from openpyxl.utils import \
     get_column_letter  # Importing the get_column_letter function from the openpyxl library to get the column letter from the column number
 
 
-def write_data_to_excel(data):
-    msgs = get_data_from_Gmail() # Get the messages from the Gmail account using the get_data_from_Gmail function from the Extract_Data_from_Gmail.py file
+def write_data_to_excel(msgs):
     wb = Workbook() # Create a new Workbook object
     ws = wb.active # Get the active worksheet from the Workbook object
     ws.title = "Gmail Data" # Set the title of the worksheet to "Gmail Data"
@@ -30,13 +28,13 @@ def write_data_to_excel(data):
     # # https://stackoverflow.com/questions/1463074/how-can-i-get-an-email-messages-text-content-using-python
     # # NOTE that a Message object consists of headers and payloads.
 
+    # Write the header row to the Excel file
+    ws.append(["Sender", "Date Received", "Subject", "Body"])
+
     for msg in msgs[::-1]:
         for response_part in msg:
             if type(response_part) is tuple:
                 my_msg=email.message_from_bytes((response_part[1]))
-
-                # Get the subject of the email
-                subject = my_msg['subject']
 
                 # Get the sender of the email
                 sender = my_msg['from']
@@ -44,6 +42,9 @@ def write_data_to_excel(data):
                 # Get the date of the email
                 date = email.utils.parsedate_to_datetime(my_msg['date'])
                 date = date.strftime("%Y-%m-%d %H:%M:%S")
+
+                # Get the subject of the email
+                subject = my_msg['subject']
 
                 # Get the body of the email
                 for part in my_msg.walk():  
@@ -53,7 +54,7 @@ def write_data_to_excel(data):
                         body = part.get_payload()
                         
                 # Write the data to the Excel file
-                ws.append([subject, date, sender, body])
+                ws.append([sender,  date, subject, body])
 
     # Save the Excel file
     wb.save("gmail_data.xlsx")
